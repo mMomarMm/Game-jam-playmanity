@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerUndertale : MonoBehaviour
 {
-    [SerializeField] float speedMov;
+    [SerializeField] float speedMov, offset;
     Rigidbody2D rb;
     float xInput, yInput;
     void Start()
@@ -20,6 +20,9 @@ public class PlayerUndertale : MonoBehaviour
     }
     void FixedUpdate()
     {
-        rb.velocity = new Vector2(xInput, yInput).normalized;
+        var dir = new Vector2(xInput, yInput).normalized;
+        rb.velocity = dir;
+        if (xInput != 0 || yInput != 0) rb.rotation = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + offset;
+        else rb.rotation=0;
     }
 }
