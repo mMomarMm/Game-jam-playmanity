@@ -9,10 +9,10 @@ public class PlayerUndertale : MonoBehaviour
     float xInput, yInput;
     void Start()
     {
+
         rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         xInput = Input.GetAxisRaw("Horizontal");
@@ -21,8 +21,12 @@ public class PlayerUndertale : MonoBehaviour
     void FixedUpdate()
     {
         var dir = new Vector2(xInput, yInput).normalized;
-        rb.velocity = dir;
-        if (xInput != 0 || yInput != 0) rb.rotation = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + offset;
-        else rb.rotation=0;
+        rb.position = rb.position + dir * speedMov * Time.deltaTime;
+
+        if (xInput != 0 || yInput != 0)
+            rb.rotation = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + offset;
+
+        else
+            rb.rotation = 0;
     }
 }
