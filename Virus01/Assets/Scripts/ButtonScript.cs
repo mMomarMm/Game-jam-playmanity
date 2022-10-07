@@ -7,13 +7,24 @@ using TMPro;
 
 public class ButtonScript : MonoBehaviour
 {
-    // Start is called before the first frame update
-    public string ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    public GameObject Canvas;
+    private string ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public GameObject UIPrefab;
-    void Start()
-    {
-        
+
+    public GameObject attackButton, defenseButton, dodgeButton;
+
+    private Sprite attackSprite, defenseSprite, dodgeSprite;
+    public Sprite attackOnClickSprite, defenseOnClickSprite, dodgeOnClickSprite;
+
+
+    // Start is called before the first frame update
+    void Start() {
+        attackButton.TryGetComponent(out Image attackImg);
+        defenseButton.TryGetComponent(out Image defenseImg);
+        dodgeButton.TryGetComponent(out Image dodgeImg);
+
+        attackSprite = attackImg.sprite;
+        defenseSprite = defenseImg.sprite;
+        dodgeSprite = dodgeImg.sprite;
     }
 
     // Update is called once per frame
@@ -36,24 +47,37 @@ public class ButtonScript : MonoBehaviour
                 break;
         }
     }
-    public void OnAttack()
+    private IEnumerator ResetImage(GameObject imgObject, Sprite newSprite)
     {
+        yield return new WaitForSeconds(1);
+        ChangeImage(imgObject, newSprite);
+    }
+    private void ChangeImage(GameObject imgObject, Sprite newSprite)
+    {
+        imgObject.TryGetComponent(out Image image);
+        image.sprite = newSprite;
+    }
+    private void OnAttack()
+    {
+        ChangeImage(attackButton, attackOnClickSprite);
+        StartCoroutine(ResetImage(attackButton, attackSprite));
         CreateKeys(10, 16);
+
     }
-    public void OnDefense()
+    private void OnDefense()
     {
 
     }
-    public void OnDodge()
+    private void OnDodge()
     {
 
     }
-    public void CreateKeys(int minAmount, int maxAmount)
+    private void CreateKeys(int minAmount, int maxAmount)
     {
         int keyAmount = UnityEngine.Random.Range(minAmount, maxAmount);
         for(int i = 0; i < keyAmount; i++)
         {
-            GameObject newInstance = Instantiate(UIPrefab, Canvas.transform);
+            GameObject newInstance = Instantiate(UIPrefab, transform);
             if (newInstance.transform.GetChild(0).TryGetComponent(out TMP_Text u))
             {
                 u.text = ABC[UnityEngine.Random.Range(0, 25)].ToString();
