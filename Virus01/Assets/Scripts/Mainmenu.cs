@@ -7,7 +7,7 @@ public class Mainmenu : MonoBehaviour
 {
     public void NextScene()
     {
-        //SceneLoader.nextScene = 2;
+        SceneLoader.nextScene = 2;
         SceneManager.LoadScene(1);
     }
     public void Quit() { Application.Quit(); }
