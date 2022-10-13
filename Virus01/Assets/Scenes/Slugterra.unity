@@ -286,6 +286,9 @@ MonoBehaviour:
   attackOnClickSprite: {fileID: 4636778518689345228, guid: 9db7d2fbd460f27449e489394b4366b2, type: 3}
   defenseOnClickSprite: {fileID: 109811283003025523, guid: 9db7d2fbd460f27449e489394b4366b2, type: 3}
   dodgeOnClickSprite: {fileID: -4904843098291995025, guid: 9db7d2fbd460f27449e489394b4366b2, type: 3}
+  attackKeySprite: {fileID: 3803366158482755714, guid: 7c1422fcf06630c47936268616e0a7f7, type: 3}
+  defenseKeySprite: {fileID: 6138851938939018198, guid: 7c1422fcf06630c47936268616e0a7f7, type: 3}
+  dodgeKeySprite: {fileID: -6477985478461419925, guid: 7c1422fcf06630c47936268616e0a7f7, type: 3}
 --- !u!1 &1173191388
 GameObject:
   m_ObjectHideFlags: 0

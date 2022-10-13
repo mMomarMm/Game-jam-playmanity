@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Reflection;
+
 
 public class ButtonScript : MonoBehaviour
 {
     private string ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     float spaceBetween = 1.2f;
-
+    #region GameObjects
     public GameObject container;
 
     public GameObject referenceObject;
@@ -21,15 +23,19 @@ public class ButtonScript : MonoBehaviour
 
     // Button game objects
     public GameObject attackButton, defenseButton, dodgeButton;
-    private Dictionary<int, List<GameObject>> commandDict = new Dictionary<int, List<GameObject>>();
 
+    #endregion
+
+    #region Sprites
     // Sprites
     private Sprite attackSprite, defenseSprite, dodgeSprite;
     public Sprite attackOnClickSprite, defenseOnClickSprite, dodgeOnClickSprite;
+    public Sprite attackKeySprite, defenseKeySprite, dodgeKeySprite;
+    #endregion
 
     private Dictionary<int, Dictionary<string, object>> dataDict;
-
     private int lastClicked = 10;
+    private Dictionary<int, List<GameObject>> commandDict = new Dictionary<int, List<GameObject>>();
 
     // Start is called before the first frame update
     void Start() {
@@ -80,6 +86,21 @@ public class ButtonScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Transform firstChild;
+        try
+        {
+            firstChild = commandDict[lastClicked][0].transform.GetChild(0);
+        } catch
+        {
+            return;
+        }
+        firstChild.TryGetComponent(out TMP_Text u);
+        string charToRemove = u.text;
+        if(Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), charToRemove)))
+        {
+            Destroy(commandDict[lastClicked][0]);
+            commandDict[lastClicked].RemoveAt(0);
+        }
         
     }
     public void SelectAction(int objectId)
@@ -105,7 +126,6 @@ public class ButtonScript : MonoBehaviour
         List<GameObject> attackList = commandDict[objectId];
 
         int length = attackList.Count;
-        print(length);
         if (length > 0)
         {
             foreach (GameObject attack in attackList)
@@ -116,6 +136,7 @@ public class ButtonScript : MonoBehaviour
         }
         // else
         CreateKeys(objectId, minAmount, maxAmount);
+        changeColors(objectId);
 
     }
     private IEnumerator ResetImage(GameObject imgObject, Sprite newSprite)
@@ -158,5 +179,9 @@ public class ButtonScript : MonoBehaviour
         {
             container.transform.GetChild(i).gameObject.SetActive(false);
         }
+    }
+    public void changeColors(int objectId)
+    {
+
     }
 }
