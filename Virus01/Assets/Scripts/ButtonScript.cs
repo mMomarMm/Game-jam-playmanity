@@ -81,17 +81,22 @@ public class ButtonScript : MonoBehaviour
                 }
             },
         };
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (lastClicked == 10) return;
+        
         Transform firstChild;
+        List<GameObject> currentList = commandDict[lastClicked];
         try
         {
-            firstChild = commandDict[lastClicked][0].transform.GetChild(0);
-        } catch
+            firstChild = currentList[0].transform.GetChild(0);
+        } catch // There are no more objects
         {
+            CreateKeys(lastClicked);
             return;
         }
         firstChild.TryGetComponent(out TMP_Text u);
@@ -112,8 +117,6 @@ public class ButtonScript : MonoBehaviour
         lastClicked = objectId;
         
         Dictionary<string, object> data = dataDict[objectId];
-        int minAmount = (int)data["minAmount"];
-        int maxAmount = (int)data["maxAmount"];
         Sprite objectSprite = (Sprite)data["objectSprite"];
         Sprite onclickSprite = (Sprite)data["onclickSprite"];
         GameObject buttonObject = (GameObject)data["objectButton"];
@@ -135,8 +138,7 @@ public class ButtonScript : MonoBehaviour
             return;
         }
         // else
-        CreateKeys(objectId, minAmount, maxAmount);
-        changeColors(objectId);
+        // CreateKeys(objectId, minAmount, maxAmount);
 
     }
     private IEnumerator ResetImage(GameObject imgObject, Sprite newSprite)
@@ -149,20 +151,26 @@ public class ButtonScript : MonoBehaviour
         imgObject.TryGetComponent(out Image image);
         image.sprite = newSprite;
     }
-    private void CreateKeys(int objectId, int minAmount, int maxAmount)
+    private void CreateKeys(int objectId)
     {
+        Dictionary<string, object> data = dataDict[objectId];
+        int minAmount = (int)data["minAmount"];
+        int maxAmount = (int)data["maxAmount"];
+        Sprite currSprite = GetSprite();
+
         DestroyObjects();
         int keyAmount = UnityEngine.Random.Range(minAmount, maxAmount);
         for(int i = 0; i < keyAmount; i++)
         {
             GameObject newInstance = Instantiate(UIPrefab, container.transform);
             newInstance.transform.position = new Vector2(MoveKey(keyAmount, i), 0);
+            
+            newInstance.transform.GetChild(0).TryGetComponent(out TMP_Text u);
+            newInstance.transform.TryGetComponent(out Image img);
+            
+            u.text = ABC[UnityEngine.Random.Range(0, 25)].ToString();
+            img.sprite = currSprite;
 
-            if (newInstance.transform.GetChild(0).TryGetComponent(out TMP_Text u))
-            {
-                string keyStr = ABC[UnityEngine.Random.Range(0, 25)].ToString();
-                u.text = keyStr;
-            }
             commandDict[objectId].Add(newInstance);
         }
     }
@@ -180,8 +188,18 @@ public class ButtonScript : MonoBehaviour
             container.transform.GetChild(i).gameObject.SetActive(false);
         }
     }
-    public void changeColors(int objectId)
+    public Sprite GetSprite()
     {
-
+        switch (lastClicked)
+        {
+            case 0:
+                return attackKeySprite;
+            case 1:
+                return defenseKeySprite;
+            case 2:
+                return dodgeKeySprite;
+            default:
+                throw new Exception();
+        }
     }
 }
