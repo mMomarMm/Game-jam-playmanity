@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class undertaleFightManager : MonoBehaviour
 {
+    public int stage;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,5 +15,8 @@ public class undertaleFightManager : MonoBehaviour
     void Update()
     {
         
+    }
+    void NextAction(){
+
     }
 }
