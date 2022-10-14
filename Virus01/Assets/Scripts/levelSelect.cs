@@ -9,13 +9,10 @@ public class levelSelect : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D other)
     {
-        print("trigger");
         if (other.CompareTag("Player"))
         {
-            print("player");
             if (Input.GetKey(KeyCode.Return))
             {
-                print("enter");
                 SceneLoader.nextScene = nextLevel;
                 SceneManager.LoadScene(1);
             }
