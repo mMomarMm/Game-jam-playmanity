@@ -40,14 +40,14 @@ public class PlayerUndertale : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            //PlayerMap.Corruption -= damage;
-            int damage = 0;
+            float damage = 0.5f;
+            PlayerMap.Corruption += damage;
             HealthBar(damage);
         }
     }
-    void HealthBar(int damage)
+    void HealthBar(float damage)
     {
-        text.text = PlayerMap.Corruption.ToString();
+        text.text = PlayerMap.Corruption.ToString() + "%";
         var e = Vector3.zero;
         e.x += damage;
         Bar.localScale += e;
