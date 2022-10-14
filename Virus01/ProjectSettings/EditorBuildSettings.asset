@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Map.unity
     guid: c7388273ab4c6a846922e95f54eb0a13
   - enabled: 1
-    path: Assets/Scenes/Slugerra.unity
+    path: Assets/Scenes/Slugterra.unity
     guid: a98e2a0a7ef977740a479c70391138b7
   - enabled: 1
     path: Assets/Scenes/Undertale.unity
