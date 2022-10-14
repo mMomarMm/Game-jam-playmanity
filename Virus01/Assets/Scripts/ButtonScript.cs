@@ -39,6 +39,7 @@ public class ButtonScript : MonoBehaviour
 
     // Start is called before the first frame update
     void Start() {
+        Cursor.visible = true;
         attackButton.TryGetComponent(out Image attackImg);
         defenseButton.TryGetComponent(out Image defenseImg);
         dodgeButton.TryGetComponent(out Image dodgeImg);

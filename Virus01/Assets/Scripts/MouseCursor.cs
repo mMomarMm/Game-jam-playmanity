@@ -53,14 +53,6 @@ public class MouseCursor : MonoBehaviour
         if (!hovering) sR.sprite = defaultSprite;
         else sR.sprite = finger;
     }
-    /*void OnMouseEnter()
-    {
-        hovering = true;
-    }
-    private void OnMouseExit()
-    {
-        hovering = false;
-    }*/
 
     void OnTriggerEnter2D(Collider2D other)
     {
