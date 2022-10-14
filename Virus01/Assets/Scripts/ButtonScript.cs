@@ -12,6 +12,9 @@ public class ButtonScript : MonoBehaviour
     private string ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     float spaceBetween = 1.2f;
+    private int lastClicked = 10;
+    private Dictionary<int, Dictionary<string, object>> dataDict;
+    private Dictionary<int, List<GameObject>> commandDict = new Dictionary<int, List<GameObject>>();
     #region GameObjects
     public GameObject container;
 
@@ -24,18 +27,14 @@ public class ButtonScript : MonoBehaviour
     // Button game objects
     public GameObject attackButton, defenseButton, dodgeButton;
 
+    public GameObject bottomObject;
     #endregion
-
     #region Sprites
     // Sprites
     private Sprite attackSprite, defenseSprite, dodgeSprite;
     public Sprite attackOnClickSprite, defenseOnClickSprite, dodgeOnClickSprite;
     public Sprite attackKeySprite, defenseKeySprite, dodgeKeySprite;
     #endregion
-
-    private Dictionary<int, Dictionary<string, object>> dataDict;
-    private int lastClicked = 10;
-    private Dictionary<int, List<GameObject>> commandDict = new Dictionary<int, List<GameObject>>();
 
     // Start is called before the first frame update
     void Start() {
@@ -111,44 +110,32 @@ public class ButtonScript : MonoBehaviour
     }
     public void SelectAction(int objectId)
     {
-        if(lastClicked == objectId)
-        {
-            return;
-        }
+        if(lastClicked == objectId) return;
+
         lastClicked = objectId;
-        
-        Dictionary<string, object> data = dataDict[objectId];
-        Sprite objectSprite = (Sprite)data["objectSprite"];
-        Sprite onclickSprite = (Sprite)data["onclickSprite"];
-        GameObject buttonObject = (GameObject)data["objectButton"];
 
-        ChangeImage(buttonObject, onclickSprite);
-        StartCoroutine(ResetImage(buttonObject, objectSprite));
-
+        ResetButtons();
+        ChangeImage();
         DestroyObjects();
 
         List<GameObject> attackList = commandDict[objectId];
 
-        int length = attackList.Count;
-        if (length > 0)
+        if (attackList.Count > 0)
         {
             foreach (GameObject attack in attackList)
             {
                 attack.SetActive(true);
             }
-            return;
         }
-        // else
-        // CreateKeys(objectId, minAmount, maxAmount);
 
     }
-    private IEnumerator ResetImage(GameObject imgObject, Sprite newSprite)
+    private void ChangeImage()
     {
-        yield return new WaitForSeconds(1);
-        ChangeImage(imgObject, newSprite);
-    }
-    private void ChangeImage(GameObject imgObject, Sprite newSprite)
-    {
+        Dictionary<string, object> lastClickedData = dataDict[lastClicked];
+
+        GameObject imgObject = (GameObject)lastClickedData["objectButton"];
+        Sprite newSprite = (Sprite)lastClickedData["onclickSprite"];
+
         imgObject.TryGetComponent(out Image image);
         image.sprite = newSprite;
     }
@@ -201,6 +188,17 @@ public class ButtonScript : MonoBehaviour
                 return dodgeKeySprite;
             default:
                 throw new Exception();
+        }
+    }
+    private void ResetButtons()
+    {
+        List<GameObject> buttons = new List<GameObject> { attackButton, defenseButton, dodgeButton }; 
+        for(int i = 0; i < buttons.Count; i++)
+        {
+            GameObject gameObj = buttons[i];
+            gameObj.TryGetComponent(out Image image);
+            image.sprite = (Sprite)dataDict[i]["objectSprite"];
+
         }
     }
 }
