@@ -2861,7 +2861,7 @@ MonoBehaviour:
   - {fileID: 890568308}
   player: {fileID: 1074447807}
   gravity: 1.5
-  SharkHealth: 50
+  SharkHealth: 30
   sharkAnim: {fileID: 731769803}
   text: {fileID: 1341598884}
   bar: {fileID: 57167682}

@@ -19,6 +19,7 @@ public class undertaleFightManager : MonoBehaviour
         thisScript = this;
         ChangeMode();
         SetSharkHealth(0);
+        NextWave();
     }
 
     public void NextWave()
