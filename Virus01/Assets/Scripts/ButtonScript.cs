@@ -11,7 +11,7 @@ public class ButtonScript : MonoBehaviour
 {
     private readonly string ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    private readonly float spaceBetween = 1.2f;
+    private readonly float spaceBetween = 1f;
     private int lastClicked = 10;
     private int codeId = 0;
 
@@ -86,7 +86,6 @@ public class ButtonScript : MonoBehaviour
                 }
             },
         };
-
     }
 
     // Update is called once per frame
@@ -102,7 +101,12 @@ public class ButtonScript : MonoBehaviour
             firstChild = currentList[0].transform.GetChild(0);
         } catch // There are no more objects
         {
-            if(lastClicked == 1) OnDefense();
+            switch (lastClicked)
+            {
+                case 0: OnAttack();  break;
+                case 1: OnDefense();  break;
+                case 2: OnDodge(); break;
+            }
             CreateKeys(lastClicked);
             return;
         }
@@ -261,5 +265,10 @@ public class ButtonScript : MonoBehaviour
     {
         shield.TryGetComponent(out Animator animator);
         animator.SetTrigger("Defense");
+    }
+    private void OnDodge()
+    {
+        player.TryGetComponent(out Animator animator);
+        animator.SetTrigger("Dodge");
     }
 }
