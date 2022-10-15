@@ -9,16 +9,17 @@ using System.Reflection;
 
 public class ButtonScript : MonoBehaviour
 {
-    private string ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private readonly string ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    float spaceBetween = 1.2f;
+    private readonly float spaceBetween = 1.2f;
     private int lastClicked = 10;
+    private int codeId = 0;
+
     private Dictionary<int, Dictionary<string, object>> dataDict;
     private Dictionary<int, List<GameObject>> commandDict = new Dictionary<int, List<GameObject>>();
     #region GameObjects
     public GameObject container;
 
-    public GameObject referenceObject;
     public GameObject referenceFinalObject;
     
     // Key game object
@@ -27,7 +28,11 @@ public class ButtonScript : MonoBehaviour
     // Button game objects
     public GameObject attackButton, defenseButton, dodgeButton;
 
-    public GameObject bottomObject;
+    public GameObject correctContainer, incorrectContainer;
+
+    public GameObject player;
+
+    public GameObject shield;
     #endregion
     #region Sprites
     // Sprites
@@ -87,8 +92,9 @@ public class ButtonScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Time.timeScale == 0) return;
         if (lastClicked == 10) return;
-        
+
         Transform firstChild;
         List<GameObject> currentList = commandDict[lastClicked];
         try
@@ -96,23 +102,39 @@ public class ButtonScript : MonoBehaviour
             firstChild = currentList[0].transform.GetChild(0);
         } catch // There are no more objects
         {
+            if(lastClicked == 1) OnDefense();
             CreateKeys(lastClicked);
             return;
         }
         firstChild.TryGetComponent(out TMP_Text u);
         string charToRemove = u.text;
-        if(Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), charToRemove)))
+
+        if (
+            !Input.anyKeyDown || Input.GetMouseButtonDown(0) ||
+            Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape)
+            ) return;
+        if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), charToRemove)))
         {
+            correctContainer.SetActive(true);
+            incorrectContainer.SetActive(false);
+
             Destroy(commandDict[lastClicked][0]);
             commandDict[lastClicked].RemoveAt(0);
+            
+            AddCode();
+            codeId += 1;
+            return;
         }
-        
+        // else
+        correctContainer.SetActive(false);
+        incorrectContainer.SetActive(true);
     }
     public void SelectAction(int objectId)
     {
         if(lastClicked == objectId) return;
 
         lastClicked = objectId;
+
 
         ResetButtons();
         ChangeImage();
@@ -151,7 +173,8 @@ public class ButtonScript : MonoBehaviour
         for(int i = 0; i < keyAmount; i++)
         {
             GameObject newInstance = Instantiate(UIPrefab, container.transform);
-            newInstance.transform.position = new Vector2(MoveKey(keyAmount, i), 0);
+            newInstance.transform.localPosition = new Vector2(0, 0);
+            newInstance.transform.position += new Vector3(MoveKey(keyAmount, i), 0);
             
             newInstance.transform.GetChild(0).TryGetComponent(out TMP_Text u);
             newInstance.transform.TryGetComponent(out Image img);
@@ -165,7 +188,7 @@ public class ButtonScript : MonoBehaviour
     private float MoveKey(int n, int i)
     {        
         float containerWidth = referenceFinalObject.transform.position.x;
-        float xPosition = (containerWidth / 16) + (spaceBetween * (i - (n / 2)));
+        float xPosition = (containerWidth / 20) + (spaceBetween * (i - (n / 2)));
         return xPosition;
     }
 
@@ -200,5 +223,43 @@ public class ButtonScript : MonoBehaviour
             image.sprite = (Sprite)dataDict[i]["objectSprite"];
 
         }
+    }
+    private void AddCode()
+    {
+        ActivateChild(correctContainer);
+        ActivateChild(incorrectContainer);
+    }
+
+    // Activates the codeId child of the object passed
+    private void ActivateChild (GameObject parentObject)
+    {
+        if(codeId == 9)
+        {
+            DeactivateRange(0, 9);
+        } else if (codeId == 13)
+        {
+            DeactivateRange(9, 13);
+            codeId = 0;
+        }
+        Transform childObject = parentObject.transform.GetChild(codeId);
+        childObject.gameObject.SetActive(true);
+    }
+    private void DeactivateRange(int n1, int n2)
+    {
+        for (int i = n1; i < n2; i++)
+        {
+            correctContainer.transform.GetChild(i).gameObject.SetActive(false);
+            incorrectContainer.transform.GetChild(i).gameObject.SetActive(false);
+        }
+    }
+    private void OnAttack()
+    {
+        player.TryGetComponent(out Animator animator);
+        animator.SetTrigger("Attack");
+    }
+    private void OnDefense()
+    {
+        shield.TryGetComponent(out Animator animator);
+        animator.SetTrigger("Defense");
     }
 }
