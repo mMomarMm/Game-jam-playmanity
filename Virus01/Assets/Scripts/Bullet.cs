@@ -6,14 +6,10 @@ public class Bullet : MonoBehaviour
 {
     public float speed;
     [SerializeField] bool shouldErase;
-
-    void Update()
-    {
-
-    }
+    [SerializeField] Vector3 direction;
     private void FixedUpdate()
     {
-        transform.Translate(transform.up * Time.deltaTime * speed);
+        transform.Translate(direction * Time.deltaTime * speed);
     }
     void OnTriggerEnter2D(Collider2D other)
     {

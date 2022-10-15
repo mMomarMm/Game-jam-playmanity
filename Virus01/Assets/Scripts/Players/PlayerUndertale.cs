@@ -5,13 +5,14 @@ using TMPro;
 
 public class PlayerUndertale : MonoBehaviour
 {
-    [SerializeField] float speedMov, offset, rayDist, jumpForce;
+    [SerializeField] float speedMov, offset, rayDist, jumpForce, jumpTimeCounter;
     [SerializeField] Transform Bar;
     [SerializeField] TMP_Text text;
     [SerializeField] LayerMask groundLayer;
     public bool canRotate;
     Rigidbody2D rb;
-    float xInput, yInput;
+    float xInput, yInput, jumpTime;
+    bool jumping, yInputDown;
     void Start()
     {
         text.text = PlayerMap.Corruption.ToString();
@@ -44,11 +45,40 @@ public class PlayerUndertale : MonoBehaviour
         {
             bool canJump = Physics2D.Raycast(transform.position, Vector2.down, rayDist, groundLayer);
             Vector2 dir;
-            dir.x = xInput * speedMov * Time.deltaTime;
-            if (yInput > 0 && Physics2D.Raycast(transform.position, Vector2.down, rayDist, groundLayer))
-                dir.y = jumpForce;
-            else dir.y = rb.velocity.y;
-            rb.position += dir * speedMov * Time.deltaTime;
+            dir.x = xInput;
+            dir.y = rb.velocity.y;
+
+            if (Physics2D.Raycast(transform.position, Vector2.down, rayDist, groundLayer))
+            {
+                if (yInput > 0)
+                {
+                    dir.y = jumpForce;
+                    yInputDown = true;
+                    jumping = true;
+                    jumpTime = jumpTimeCounter;
+                }
+            }
+            if (yInput > 0 && jumping)
+            {
+                if (!yInputDown)
+                {
+                    yInputDown = true;
+                    jumpTime = jumpTimeCounter;
+                }
+                if (jumpTime > 0)
+                {
+                    dir.y = jumpForce;
+                    jumpTime -= Time.deltaTime;
+                }
+                else jumping = false;
+            }
+            else
+            {
+                dir.y = rb.velocity.y;
+                yInputDown = false;
+                jumping = false;
+            }
+            rb.velocity = dir;
         }
 
     }
