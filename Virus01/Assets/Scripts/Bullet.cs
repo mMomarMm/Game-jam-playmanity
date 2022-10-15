@@ -17,8 +17,9 @@ public class Bullet : MonoBehaviour
     }
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.CompareTag("Shield")){
-            Destroy(transform);
+        if (other.CompareTag("Shield"))
+        {
+            gameObject.SetActive(false);
         }
     }
 }
