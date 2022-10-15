@@ -5,6 +5,8 @@ using TMPro;
 
 public class undertaleFightManager : MonoBehaviour
 {
+    public static undertaleFightManager thisScript;
+    public int indexWave;
     [SerializeField] List<GameObject> attacks;
     [SerializeField] PlayerUndertale player;
     [SerializeField] float gravity, SharkHealth;
@@ -12,16 +14,16 @@ public class undertaleFightManager : MonoBehaviour
     [SerializeField] TMP_Text text;
     [SerializeField] GameObject bar;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        thisScript = this;
         ChangeMode();
         SetSharkHealth(0);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void NextWave()
     {
-
+        attacks[indexWave].SetActive(true);
     }
     void ChangeMode()
     {
