@@ -11,7 +11,7 @@ public class ButtonScript : MonoBehaviour
 {
     private readonly string ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    private readonly float spaceBetween = 1.2f;
+    private readonly float spaceBetween = 0.8f;
     private int lastClicked = 10;
     private int codeId = 0;
 
