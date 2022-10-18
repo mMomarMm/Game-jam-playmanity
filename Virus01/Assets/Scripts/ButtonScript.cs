@@ -40,6 +40,8 @@ public class ButtonScript : MonoBehaviour
     public Sprite attackOnClickSprite, defenseOnClickSprite, dodgeOnClickSprite;
     public Sprite attackKeySprite, defenseKeySprite, dodgeKeySprite;
     #endregion
+    private Animator playerAnimator, shieldAnimator;
+    private bool shieldIsActive = false;
 
     // Start is called before the first frame update
     void Start() {
@@ -86,6 +88,10 @@ public class ButtonScript : MonoBehaviour
                 }
             },
         };
+        player.TryGetComponent(out Animator pAnimator);
+        shield.TryGetComponent(out Animator sAnimator);
+        playerAnimator = pAnimator;
+        shieldAnimator = sAnimator;
     }
 
     // Update is called once per frame
@@ -103,8 +109,12 @@ public class ButtonScript : MonoBehaviour
         {
             switch (lastClicked)
             {
-                case 0: OnAttack();  break;
-                case 1: OnDefense();  break;
+                case 0:
+                    OnAttack();
+                    break;
+                case 1:
+                    OnDefense();
+                    break;
                 case 2: OnDodge(); break;
             }
             CreateKeys(lastClicked);
@@ -170,7 +180,7 @@ public class ButtonScript : MonoBehaviour
         Dictionary<string, object> data = dataDict[objectId];
         int minAmount = (int)data["minAmount"];
         int maxAmount = (int)data["maxAmount"];
-        Sprite currSprite = GetSprite();
+        Sprite currSprite = GetSprite(objectId);
 
         DestroyObjects();
         int keyAmount = UnityEngine.Random.Range(minAmount, maxAmount);
@@ -203,9 +213,13 @@ public class ButtonScript : MonoBehaviour
             container.transform.GetChild(i).gameObject.SetActive(false);
         }
     }
-    public Sprite GetSprite()
+    public Sprite GetSprite(int ?objectId = null)
     {
-        switch (lastClicked)
+        if(objectId == null)
+        {
+            objectId = lastClicked;
+        }
+        switch (objectId)
         {
             case 0:
                 return attackKeySprite;
@@ -258,17 +272,39 @@ public class ButtonScript : MonoBehaviour
     }
     private void OnAttack()
     {
-        player.TryGetComponent(out Animator animator);
-        animator.SetTrigger("Attack");
+        playerAnimator.SetTrigger("Attack");
     }
     private void OnDefense()
     {
-        shield.TryGetComponent(out Animator animator);
-        animator.SetTrigger("Defense");
+        if (shieldIsActive) return;
+        shieldAnimator.SetBool("hasShield", true);
+        shieldIsActive = true;
     }
     private void OnDodge()
     {
-        player.TryGetComponent(out Animator animator);
-        animator.SetTrigger("Dodge");
+        RemoveShield("VanishShield");
+        playerAnimator.SetTrigger("Dodge");
     }
+    private void BreakShield()
+    {
+        RemoveShield("BreakShield");
+    }
+    private void RemoveShield(string triggerName)
+    {
+        shieldAnimator.SetBool("hasShield", false);
+        shieldAnimator.SetTrigger(triggerName);
+        shieldIsActive = false;
+        shield.SetActive(false);
+        commandDict[1] = new List<GameObject>();
+        CreateKeys(1);
+        shield.SetActive(true);
+    }
+    private void OnDamage()
+    {
+        PlayerMap.Corruption += 1;
+    }
+
+    // I am very sorry for doing this, but I have no election left, time is over
+    // By the time I wrote this, only god & I knew what I was doing, now only god knows
+
 }
