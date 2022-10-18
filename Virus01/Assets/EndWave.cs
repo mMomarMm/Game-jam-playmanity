@@ -11,10 +11,8 @@ public class EndWave : MonoBehaviour
     }
     void OnTriggerEnter2D(Collider2D other)
     {
-        print("1");
         if (other.CompareTag("Player"))
         {
-            print("2");
             b.EndWave();
         }
     }

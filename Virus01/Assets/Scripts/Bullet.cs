@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float speed, damage;
-    [SerializeField] bool shouldErase;
+    public float speed;
+    [Tooltip("if tru it means to change to blue and false change to red")]
+    [SerializeField] bool changeColorToBlue;
     [SerializeField] Vector3 direction;
     float hits;
+    private void Start()
+    {
+        undertaleFightManager.thisScript.ChangeMode(changeColorToBlue);
+    }
     private void FixedUpdate()
     {
         transform.Translate(direction * Time.deltaTime * speed);
@@ -29,6 +34,5 @@ public class Bullet : MonoBehaviour
         undertaleFightManager.thisScript.indexWave += 1;
         undertaleFightManager.thisScript.SetSharkHealth(5 - hits / 2);
         undertaleFightManager.thisScript.NextWave();
-        transform.parent.parent.gameObject.SetActive(false);
     }
 }
