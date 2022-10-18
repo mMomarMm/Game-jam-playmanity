@@ -6,16 +6,27 @@ using UnityEngine.SceneManagement;
 public class levelSelect : MonoBehaviour
 {
     [SerializeField] int nextLevel;
-
-    void OnTriggerStay2D(Collider2D other)
+    [SerializeField] Animator a;
+    void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
-            if (Input.GetKey(KeyCode.Return))
-            {
-                SceneLoader.nextScene = nextLevel;
-                SceneManager.LoadScene(1);
-            }
+            a.SetBool("PlayerInside", true);
+        }
+    }
+    void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.CompareTag("Player") && Input.GetKey(KeyCode.Return))
+        {
+            SceneLoader.nextScene = nextLevel;
+            SceneManager.LoadScene(1);
+        }
+    }
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            a.SetBool("PlayerInside", false);
         }
     }
 }
