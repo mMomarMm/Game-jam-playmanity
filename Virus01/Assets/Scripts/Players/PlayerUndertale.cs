@@ -45,7 +45,7 @@ public class PlayerUndertale : MonoBehaviour
         {
             bool canJump = Physics2D.Raycast(transform.position, Vector2.down, rayDist, groundLayer);
             Vector2 dir;
-            dir.x = xInput;
+            dir.x = xInput * speedMov;
             dir.y = rb.velocity.y;
 
             if (Physics2D.Raycast(transform.position, Vector2.down, rayDist, groundLayer))

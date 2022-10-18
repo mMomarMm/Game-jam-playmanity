@@ -4,10 +4,20 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float speed, damage;
-    [SerializeField] bool shouldErase;
+    public float speed;
+    [Tooltip("if tru it means to change to blue and false change to red")]
+    [SerializeField] bool changeColorToBlue;
     [SerializeField] Vector3 direction;
+    [SerializeField] float whenEnd;
     float hits;
+    private void Start()
+    {
+        if (whenEnd != 0)
+        {
+            StartCoroutine(EndWaveAtTime());
+        }
+        undertaleFightManager.thisScript.ChangeMode(changeColorToBlue);
+    }
     private void FixedUpdate()
     {
         transform.Translate(direction * Time.deltaTime * speed);
@@ -23,12 +33,16 @@ public class Bullet : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
+    IEnumerator EndWaveAtTime()
+    {
+        yield return new WaitForSeconds(whenEnd);
+        EndWave();
+    }
     public void EndWave()
     {
         hits -= 1;
         undertaleFightManager.thisScript.indexWave += 1;
-        undertaleFightManager.thisScript.SetSharkHealth(5 - hits / 2);
+        undertaleFightManager.thisScript.SetSharkHealth(7 - (hits / 2));
         undertaleFightManager.thisScript.NextWave();
-        transform.parent.parent.gameObject.SetActive(false);
     }
 }
