@@ -2568,7 +2568,7 @@ GameObject:
   - component: {fileID: 1704564998}
   - component: {fileID: 1704564997}
   m_Layer: 0
-  m_Name: Square
+  m_Name: SlugterraAdvertisement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
