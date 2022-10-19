@@ -7,12 +7,14 @@ public class AdvertisementScript : MonoBehaviour
     [SerializeField] float speedMovementX = -1.3f;
     [SerializeField] float speedMovementY = 2;
     [SerializeField] float sinFactor = 6;
-    [SerializeField] GameObject player;
-    private Animator playerAnimator;
+    [SerializeField] GameObject player, shield;
+    private Animator playerAnimator, shieldAnimator;
     // Start is called before the first frame update
     void Start()
     {
+        shield.TryGetComponent(out Animator shieldAnim);
         player.TryGetComponent(out Animator animator);
+        shieldAnimator = shieldAnim;
         playerAnimator = animator;
     }
 
@@ -29,13 +31,15 @@ public class AdvertisementScript : MonoBehaviour
         // This manages all the collisions of the enemies
         if (collision.CompareTag("Player"))
         {
-            //OnDamage();
-            print("Player Damage");
             DamagePlayer();
         }
         else if (collision.CompareTag("Shield"))
         {
-            print("Shield");
+            if (!ButtonScript.shieldIsActive)
+            {
+                return;
+            }
+            ButtonScript.buttonScriptThis.BreakShield();
         }
         gameObject.SetActive(false);
     }

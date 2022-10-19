@@ -41,8 +41,8 @@ public class ButtonScript : MonoBehaviour
     public Sprite attackKeySprite, defenseKeySprite, dodgeKeySprite;
     #endregion
     private Animator playerAnimator, shieldAnimator;
-    private bool shieldIsActive = false;
-
+    public static bool shieldIsActive = false;
+    public static ButtonScript buttonScriptThis;
     // Start is called before the first frame update
     void Start() {
         Cursor.visible = true;
@@ -92,6 +92,7 @@ public class ButtonScript : MonoBehaviour
         shield.TryGetComponent(out Animator sAnimator);
         playerAnimator = pAnimator;
         shieldAnimator = sAnimator;
+        buttonScriptThis = this;
     }
 
     // Update is called once per frame
@@ -274,7 +275,7 @@ public class ButtonScript : MonoBehaviour
     {
         playerAnimator.SetTrigger("Attack");
     }
-    private void OnDefense()
+    public void OnDefense()
     {
         if (shieldIsActive) return;
         shieldAnimator.SetBool("hasShield", true);
@@ -284,20 +285,20 @@ public class ButtonScript : MonoBehaviour
     {
         RemoveShield("VanishShield");
         playerAnimator.SetTrigger("Dodge");
-    }
-    private void BreakShield()
-    {
-        RemoveShield("BreakShield");
-    }
-    private void RemoveShield(string triggerName)
-    {
-        shieldAnimator.SetBool("hasShield", false);
-        shieldAnimator.SetTrigger(triggerName);
-        shieldIsActive = false;
         shield.SetActive(false);
         commandDict[1] = new List<GameObject>();
         CreateKeys(1);
         shield.SetActive(true);
+    }
+    public void BreakShield()
+    {
+        RemoveShield("BreakShield");
+    }
+    public void RemoveShield(string triggerName)
+    {
+        shieldAnimator.SetBool("hasShield", false);
+        shieldAnimator.SetTrigger(triggerName);
+        shieldIsActive = false;
     }
     private void OnDamage()
     {
