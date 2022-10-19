@@ -7,6 +7,7 @@ public class undertaleFightManager : MonoBehaviour
 {
     public static undertaleFightManager thisScript;
     public int indexWave;
+    public GameObject box;
     [SerializeField] List<GameObject> attacks;
     [SerializeField] PlayerUndertale player;
     [SerializeField] float gravity, SharkHealth;
@@ -37,8 +38,9 @@ public class undertaleFightManager : MonoBehaviour
     }
     IEnumerator StartWave()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(2f);
         attacks[Mathf.Clamp(indexWave - 1, 0, attacks.Count)].SetActive(false);
+        if (indexWave == attacks.Count) indexWave = 0;
         attacks[indexWave].SetActive(true);
     }
     public void ChangeMode(bool shouldBeBlue)

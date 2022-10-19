@@ -8,9 +8,14 @@ public class Bullet : MonoBehaviour
     [Tooltip("if tru it means to change to blue and false change to red")]
     [SerializeField] bool changeColorToBlue;
     [SerializeField] Vector3 direction;
+    [SerializeField] float whenEnd;
     float hits;
     private void Start()
     {
+        if (whenEnd != 0)
+        {
+            StartCoroutine(EndWaveAtTime());
+        }
         undertaleFightManager.thisScript.ChangeMode(changeColorToBlue);
     }
     private void FixedUpdate()
@@ -27,6 +32,11 @@ public class Bullet : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
+    }
+    IEnumerator EndWaveAtTime()
+    {
+        yield return new WaitForSeconds(whenEnd);
+        EndWave();
     }
     public void EndWave()
     {
