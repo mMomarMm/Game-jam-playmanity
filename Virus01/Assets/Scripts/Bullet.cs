@@ -42,7 +42,7 @@ public class Bullet : MonoBehaviour
     {
         hits -= 1;
         undertaleFightManager.thisScript.indexWave += 1;
-        undertaleFightManager.thisScript.SetSharkHealth(5 - hits / 2);
+        undertaleFightManager.thisScript.SetSharkHealth(7 - (hits / 2));
         undertaleFightManager.thisScript.NextWave();
     }
 }
