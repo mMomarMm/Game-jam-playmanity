@@ -48,6 +48,7 @@ public class undertaleFightManager : MonoBehaviour
         player.transform.rotation = Quaternion.identity;
         player.TryGetComponent(out SpriteRenderer s);
         player.TryGetComponent(out Rigidbody2D rb);
+        rb.velocity = Vector2.zero;
         if (shouldBeBlue)
         {
             player.canRotate = true;
