@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.Reflection;
+using UnityEngine.SceneManagement;
+
 
 
 public class ButtonScript : MonoBehaviour
@@ -52,7 +53,11 @@ public class ButtonScript : MonoBehaviour
     // Sorry god
     public static GameObject publicPlayer;
     public static bool isInDodge = false;
+    public GameObject EndPanel, winPanel;
+
+    private bool win = false;
     // Start is called before the first frame update
+    
     void Start() {
         Cursor.visible = true;
         attackButton.TryGetComponent(out Image attackImg);
@@ -119,6 +124,7 @@ public class ButtonScript : MonoBehaviour
     void Update()
     {
         if (Time.timeScale == 0) return;
+        if (win) return;
 
         if (!currentAdvertisement.activeSelf)
         {
@@ -340,9 +346,9 @@ public class ButtonScript : MonoBehaviour
     public void OnDamage(int corruption = 1)
     {
         PlayerMap.Corruption += corruption;
-        if(PlayerMap.Corruption == 100)
+        if(PlayerMap.Corruption >= 100)
         {
-            // die
+            StartCoroutine(Crash());
         }
         playerAnimator.SetTrigger("Damage");
         player.transform.GetChild(0).TryGetComponent(out TMP_Text u);
@@ -358,12 +364,29 @@ public class ButtonScript : MonoBehaviour
         enemyHealth--;
         enemy.transform.GetChild(0).TryGetComponent(out TMP_Text u);
         u.text = (enemyHealth * 10) + "%";
+        if (enemyHealth <= 0)
+        {
+            win = true;
+            winPanel.SetActive(true);
+        }
     }
+    
     IEnumerator ResetAttack(int t = 3)
     {
         yield return new WaitForSeconds(t);
         bullets.SetActive(false);
         bullets.transform.position = bulletsPosition;
     }
-
+    IEnumerator Crash()
+    {
+        EndPanel.SetActive(true);
+        yield return new WaitForSecondsRealtime(5);
+        Application.Quit();
+    }
+    public void ButtonClickHandler()
+    { 
+        PlayerMap.level2 = true;
+        SceneLoader.nextScene = 2;
+        SceneManager.LoadScene(1);
+    }
 }
