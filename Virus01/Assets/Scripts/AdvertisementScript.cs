@@ -7,22 +7,14 @@ public class AdvertisementScript : MonoBehaviour
     [SerializeField] float speedMovementX = -1.3f;
     [SerializeField] float speedMovementY = 2;
     [SerializeField] float sinFactor = 6;
-    [SerializeField] GameObject player, shield;
-    private Animator playerAnimator, shieldAnimator;
+
     // Start is called before the first frame update
-    void Start()
-    {
-        shield.TryGetComponent(out Animator shieldAnim);
-        player.TryGetComponent(out Animator animator);
-        shieldAnimator = shieldAnim;
-        playerAnimator = animator;
-    }
 
     // Update is called once per frame
     void Update()
     {
         Vector3 direction = Vector3.zero;
-        direction.x = speedMovementX;
+        direction.x = speedMovementX - 5 * Time.deltaTime * Mathf.Pow(2, 11 - ButtonScript.enemyHealth);
         direction.y = Mathf.Sin(Time.time * sinFactor) * speedMovementY;
         transform.position += direction * Time.deltaTime;
     }
@@ -45,7 +37,6 @@ public class AdvertisementScript : MonoBehaviour
     }
     private void DamagePlayer()
     {
-        PlayerMap.Corruption += 1;
-        playerAnimator.SetTrigger("Damage"); 
+        ButtonScript.buttonScriptThis.OnDamage(2);
     }
 }

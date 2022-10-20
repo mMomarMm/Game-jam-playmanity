@@ -30,19 +30,28 @@ public class ButtonScript : MonoBehaviour
 
     public GameObject correctContainer, incorrectContainer;
 
-    public GameObject player;
+    public GameObject player, shield, bullets;
 
-    public GameObject shield;
+    public GameObject advertisementPrefab, enemy, referenceObject2;
     #endregion
     #region Sprites
     // Sprites
     private Sprite attackSprite, defenseSprite, dodgeSprite;
     public Sprite attackOnClickSprite, defenseOnClickSprite, dodgeOnClickSprite;
     public Sprite attackKeySprite, defenseKeySprite, dodgeKeySprite;
+    public Sprite advertisement1, advertisement2, advertisement3;
     #endregion
     private Animator playerAnimator, shieldAnimator;
     public static bool shieldIsActive = false;
     public static ButtonScript buttonScriptThis;
+
+    private Vector3 bulletsPosition;
+    public static int enemyHealth = 10;
+    private GameObject currentAdvertisement;
+
+    // Sorry god
+    public static GameObject publicPlayer;
+    
     // Start is called before the first frame update
     void Start() {
         Cursor.visible = true;
@@ -92,13 +101,32 @@ public class ButtonScript : MonoBehaviour
         shield.TryGetComponent(out Animator sAnimator);
         playerAnimator = pAnimator;
         shieldAnimator = sAnimator;
-        buttonScriptThis = this;
-    }
+        bulletsPosition = bullets.transform.position;
 
+        buttonScriptThis = this;
+
+
+        currentAdvertisement = Instantiate(advertisementPrefab, referenceObject2.transform);
+        currentAdvertisement.TryGetComponent(out SpriteRenderer currentSprite);
+        currentSprite.sprite = GetAdvertisement();
+        publicPlayer = player;
+    }
+    Sprite GetAdvertisement()
+    {
+        return (new List<Sprite> { advertisement1, advertisement2, advertisement3 })[UnityEngine.Random.Range(0, 2)];
+    }
     // Update is called once per frame
     void Update()
     {
         if (Time.timeScale == 0) return;
+
+        if (!currentAdvertisement.activeSelf)
+        {
+            currentAdvertisement = Instantiate(advertisementPrefab, referenceObject2.transform);
+            currentAdvertisement.TryGetComponent(out SpriteRenderer currentSprite);
+            currentSprite.sprite = GetAdvertisement();
+        }
+
         if (lastClicked == 10) return;
 
         Transform firstChild;
@@ -116,7 +144,9 @@ public class ButtonScript : MonoBehaviour
                 case 1:
                     OnDefense();
                     break;
-                case 2: OnDodge(); break;
+                case 2:
+                    OnDodge(); 
+                    break;
             }
             CreateKeys(lastClicked);
             return;
@@ -143,6 +173,7 @@ public class ButtonScript : MonoBehaviour
         // else
         correctContainer.SetActive(false);
         incorrectContainer.SetActive(true);
+        OnDamage();
     }
     public void SelectAction(int objectId)
     {
@@ -271,10 +302,6 @@ public class ButtonScript : MonoBehaviour
             incorrectContainer.transform.GetChild(i).gameObject.SetActive(false);
         }
     }
-    private void OnAttack()
-    {
-        playerAnimator.SetTrigger("Attack");
-    }
     public void OnDefense()
     {
         if (shieldIsActive) return;
@@ -283,10 +310,13 @@ public class ButtonScript : MonoBehaviour
     }
     private void OnDodge()
     {
+        StartCoroutine(ResetAttack(0));
         RemoveShield("VanishShield");
         playerAnimator.SetTrigger("Dodge");
         shield.SetActive(false);
+        commandDict[0] = new List<GameObject>();
         commandDict[1] = new List<GameObject>();
+        CreateKeys(0);
         CreateKeys(1);
         shield.SetActive(true);
     }
@@ -300,12 +330,33 @@ public class ButtonScript : MonoBehaviour
         shieldAnimator.SetTrigger(triggerName);
         shieldIsActive = false;
     }
-    private void OnDamage()
+    public void OnDamage(int corruption = 1)
     {
-        PlayerMap.Corruption += 1;
+        PlayerMap.Corruption += corruption;
+        if(PlayerMap.Corruption == 100)
+        {
+            // die
+        }
+        playerAnimator.SetTrigger("Damage");
+        player.transform.GetChild(0).TryGetComponent(out TMP_Text u);
+        u.text = "Corruption: " + PlayerMap.Corruption;
     }
 
     // I am very sorry for doing this, but I have no election left, time is over
     // By the time I wrote this, only god & I knew what I was doing, now only god knows
+    private void OnAttack()
+    {
+        bullets.SetActive(true);
+        StartCoroutine(ResetAttack());
+        enemyHealth--;
+        enemy.transform.GetChild(0).TryGetComponent(out TMP_Text u);
+        u.text = (enemyHealth * 10) + "%";
+    }
+    IEnumerator ResetAttack(int t = 3)
+    {
+        yield return new WaitForSeconds(t);
+        bullets.SetActive(false);
+        bullets.transform.position = bulletsPosition;
+    }
 
 }
