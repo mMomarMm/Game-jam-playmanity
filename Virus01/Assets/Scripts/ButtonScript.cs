@@ -51,7 +51,7 @@ public class ButtonScript : MonoBehaviour
 
     // Sorry god
     public static GameObject publicPlayer;
-    
+    public static bool isInDodge = false;
     // Start is called before the first frame update
     void Start() {
         Cursor.visible = true;
@@ -310,6 +310,7 @@ public class ButtonScript : MonoBehaviour
     }
     private void OnDodge()
     {
+        isInDodge = true;
         StartCoroutine(ResetAttack(0));
         RemoveShield("VanishShield");
         playerAnimator.SetTrigger("Dodge");
@@ -319,6 +320,12 @@ public class ButtonScript : MonoBehaviour
         CreateKeys(0);
         CreateKeys(1);
         shield.SetActive(true);
+        StartCoroutine(ResetDodge());   
+    }
+    IEnumerator ResetDodge()
+    {
+        yield return new WaitForSeconds(4);
+        isInDodge = false;
     }
     public void BreakShield()
     {
