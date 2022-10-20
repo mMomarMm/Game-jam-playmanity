@@ -40,7 +40,7 @@ public class undertaleFightManager : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         attacks[Mathf.Clamp(indexWave - 1, 0, attacks.Count)].SetActive(false);
-        if (indexWave == attacks.Count) indexWave = 0;
+        if (indexWave == attacks.Count) indexWave = Random.Range(3, attacks.Count);
         attacks[indexWave].SetActive(true);
     }
     public void ChangeMode(bool shouldBeBlue)

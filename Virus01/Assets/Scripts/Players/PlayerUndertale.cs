@@ -6,7 +6,7 @@ using TMPro;
 public class PlayerUndertale : MonoBehaviour
 {
     [SerializeField] float speedMov, offset, rayDist, jumpForce, jumpTimeCounter;
-    [SerializeField] Transform Bar;
+    [SerializeField] Transform Bar, endPanel;
     [SerializeField] TMP_Text text;
     [SerializeField] LayerMask groundLayer;
     public bool canRotate;
@@ -97,5 +97,15 @@ public class PlayerUndertale : MonoBehaviour
         var e = Vector3.zero;
         e.x += damage;
         Bar.localScale += e;
+        if (PlayerMap.Corruption > 100)
+        {
+            StartCoroutine(Crash());
+        }
+    }
+    IEnumerator Crash()
+    {
+        endPanel.gameObject.SetActive(true);
+        yield return new WaitForSeconds(5f);
+        Application.Quit();
     }
 }
