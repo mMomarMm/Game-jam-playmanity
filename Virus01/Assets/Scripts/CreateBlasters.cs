@@ -5,23 +5,37 @@ using UnityEngine;
 public class CreateBlasters : MonoBehaviour
 {
     [SerializeField] GameObject blasterPrefab;
-    [SerializeField] List<float> times;
+    [SerializeField] float timeBetween, maxNumber, minY, maxY, boundY;
+    [SerializeField] Vector2 XBounds, xNoBounds;
     float currentTime;
     int currentIndex;
     void Update()
     {
-        if (currentTime >= times[currentIndex])
+        if (currentTime >= timeBetween)
         {
             Spawn();
             currentTime = 0;
             currentIndex += 1;
-            if (currentIndex == times.Count) gameObject.SetActive(false);
+            if (currentIndex == maxNumber) gameObject.SetActive(false);
         }
         else
         {
-            currentTime += times[currentIndex];
+            currentTime += Time.deltaTime;
         }
     }
     void Spawn()
-    { }
+    {
+        Transform b = Instantiate(blasterPrefab, transform).transform;
+        Vector3 pos;
+        pos.z = 0;
+        pos.y = Random.Range(minY, maxY);
+        Vector2 xRange;
+        if (pos.y > boundY) xRange = xNoBounds;
+        else xRange = XBounds;
+        int dir;
+        if (Random.Range(1, 0) == 0) dir = 1;
+        else dir = -1;
+        pos.x = Random.Range(xRange.x, xRange.y) * dir;
+        b.position = pos;
+    }
 }

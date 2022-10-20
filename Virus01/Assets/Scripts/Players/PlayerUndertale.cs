@@ -105,7 +105,7 @@ public class PlayerUndertale : MonoBehaviour
     IEnumerator Crash()
     {
         endPanel.gameObject.SetActive(true);
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSecondsRealtime(5f);
         Application.Quit();
     }
 }
