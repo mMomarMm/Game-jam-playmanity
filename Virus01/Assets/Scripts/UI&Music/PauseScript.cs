@@ -16,11 +16,13 @@ public class PauseScript : MonoBehaviour
         {
             if (Time.timeScale != 0)
             {
+                Cursor.visible = true;
                 child.SetActive(true);
                 Time.timeScale = 0;
             }
             else
             {
+                Cursor.visible = false;
                 child.SetActive(false);
                 Time.timeScale = 1;
             }

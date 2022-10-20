@@ -37,5 +37,9 @@ public class CreateBlasters : MonoBehaviour
         else dir = -1;
         pos.x = Random.Range(xRange.x, xRange.y) * dir;
         b.position = pos;
+
+        var direction = b.position -undertaleFightManager.thisScript.player.transform.position;
+        float rotZ = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        b.rotation = Quaternion.Euler(0, 0, rotZ);
     }
 }

@@ -86,7 +86,7 @@ public class PlayerUndertale : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            float damage = 0.5f;
+            float damage = 2f;
             PlayerMap.Corruption += damage;
             HealthBar(damage);
         }

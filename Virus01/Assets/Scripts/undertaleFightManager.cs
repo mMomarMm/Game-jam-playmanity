@@ -6,17 +6,33 @@ using TMPro;
 public class undertaleFightManager : MonoBehaviour
 {
     public static undertaleFightManager thisScript;
+    static bool isFirstTime = true;
     public int indexWave;
     public GameObject box;
     [SerializeField] List<GameObject> attacks;
-    [SerializeField] PlayerUndertale player;
+    public PlayerUndertale player;
     [SerializeField] float gravity, SharkHealth;
     [SerializeField] Animator sharkAnim;
     [SerializeField] TMP_Text text;
     [SerializeField] GameObject bar, EnterText;
+    float sharkHP;
+
+    //only to use when the first waves had happened
+    static List<GameObject> wavesPrefab = new List<GameObject>();
+    float barMax;
 
     void Awake()
     {
+        sharkHP = SharkHealth;
+        barMax = bar.transform.localScale.x;
+        if (isFirstTime)
+        {
+            for (int i = 2; i < attacks.Count - 1; i++)
+            {
+                wavesPrefab.Add(attacks[i]);
+            }
+        }
+        player = GameObject.FindObjectOfType<PlayerUndertale>();
         thisScript = this;
         SetSharkHealth(0);
         StartCoroutine(StartGame());
@@ -40,7 +56,12 @@ public class undertaleFightManager : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         attacks[Mathf.Clamp(indexWave - 1, 0, attacks.Count)].SetActive(false);
-        if (indexWave == attacks.Count) indexWave = Random.Range(3, attacks.Count);
+        if (indexWave == attacks.Count)
+        {
+            Instantiate(gameObject);
+            isFirstTime = false;
+            Destroy(gameObject);
+        }
         attacks[indexWave].SetActive(true);
     }
     public void ChangeMode(bool shouldBeBlue)
@@ -65,10 +86,10 @@ public class undertaleFightManager : MonoBehaviour
     public void SetSharkHealth(float damage)
     {
         sharkAnim.SetTrigger("Hurt");
-        SharkHealth -= damage;
-        text.text = SharkHealth.ToString();
-        var e = Vector3.zero;
-        e.x = damage;
-        bar.transform.localScale -= e;
+        sharkHP -= damage;
+        text.text = sharkHP.ToString();
+        var e = bar.transform.localScale;
+        e.x = sharkHP / SharkHealth * barMax;
+        bar.transform.localScale = e;
     }
 }
