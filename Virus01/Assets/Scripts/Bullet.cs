@@ -9,7 +9,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] bool changeColorToBlue;
     [SerializeField] Vector3 direction;
     [SerializeField] float whenEnd;
-    float hits;
+    float hits = 0;
     private void Start()
     {
         if (whenEnd != 0)
