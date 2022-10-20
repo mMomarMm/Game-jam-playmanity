@@ -14,22 +14,22 @@ public class AdvertisementScript : MonoBehaviour
     void Update()
     {
         Vector3 direction = Vector3.zero;
-        direction.x = speedMovementX - 0.7f * Time.deltaTime * Mathf.Pow(2, 12 - ButtonScript.enemyHealth);
+        direction.x = speedMovementX - Time.deltaTime * Mathf.Pow(2, 11 - ButtonScript.enemyHealth);
         direction.y = Mathf.Sin(Time.time * sinFactor) * speedMovementY;
         transform.position += direction * Time.deltaTime;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // This manages all the collisions of the enemies
-        if (collision.CompareTag("Player"))
-        {
-            if (!ButtonScript.isInDodge) DamagePlayer();
-        }
-        else if (collision.CompareTag("Shield"))
+        if (collision.CompareTag("Shield"))
         {
             if (!ButtonScript.shieldIsActive) return;
             ButtonScript.buttonScriptThis.BreakShield();
+        } else if (collision.CompareTag("Player"))
+        {
+            if (!ButtonScript.isInDodge) DamagePlayer();
         }
+        
         gameObject.SetActive(false);
     }
     private void DamagePlayer()
