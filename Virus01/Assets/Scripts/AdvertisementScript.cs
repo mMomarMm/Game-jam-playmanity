@@ -14,7 +14,7 @@ public class AdvertisementScript : MonoBehaviour
     void Update()
     {
         Vector3 direction = Vector3.zero;
-        direction.x = speedMovementX - Time.deltaTime * Mathf.Pow(2, 11 - ButtonScript.enemyHealth);
+        direction.x = speedMovementX - Time.deltaTime * Mathf.Pow(1.8f, 11 - ButtonScript.enemyHealth);
         direction.y = Mathf.Sin(Time.time * sinFactor) * speedMovementY;
         transform.position += direction * Time.deltaTime;
     }
