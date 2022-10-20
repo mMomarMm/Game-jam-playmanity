@@ -14,7 +14,7 @@ public class AdvertisementScript : MonoBehaviour
     void Update()
     {
         Vector3 direction = Vector3.zero;
-        direction.x = speedMovementX - 5 * Time.deltaTime * Mathf.Pow(2, 11 - ButtonScript.enemyHealth);
+        direction.x = speedMovementX - 0.7f * Time.deltaTime * Mathf.Pow(2, 12 - ButtonScript.enemyHealth);
         direction.y = Mathf.Sin(Time.time * sinFactor) * speedMovementY;
         transform.position += direction * Time.deltaTime;
     }
@@ -23,14 +23,11 @@ public class AdvertisementScript : MonoBehaviour
         // This manages all the collisions of the enemies
         if (collision.CompareTag("Player"))
         {
-            DamagePlayer();
+            if (!ButtonScript.isInDodge) DamagePlayer();
         }
         else if (collision.CompareTag("Shield"))
         {
-            if (!ButtonScript.shieldIsActive)
-            {
-                return;
-            }
+            if (!ButtonScript.shieldIsActive) return;
             ButtonScript.buttonScriptThis.BreakShield();
         }
         gameObject.SetActive(false);
