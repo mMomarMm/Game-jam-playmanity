@@ -46,8 +46,9 @@ public class undertaleFightManager : MonoBehaviour
             yield return null;
         }
         EnterText.SetActive(false);
-        attacks[indexWave].SetActive(true);
-        previousWave = attacks[indexWave];
+        previousWave = Instantiate(attacks[0]);
+        previousWave.transform.parent = wavesChild.transform;
+        previousWave.SetActive(true);
     }
     public void NextWave()
     {

@@ -25,12 +25,13 @@ public class AdvertisementScript : MonoBehaviour
         {
             if (!ButtonScript.shieldIsActive) return;
             ButtonScript.buttonScriptThis.BreakShield();
-        } else if (collision.CompareTag("Player"))
+            gameObject.SetActive(false);
+        }
+        else if (collision.CompareTag("Player"))
         {
+            gameObject.SetActive(false);
             if (!ButtonScript.isInDodge) DamagePlayer();
         }
-        
-        gameObject.SetActive(false);
     }
     private void DamagePlayer()
     {

@@ -370,6 +370,7 @@ public class ButtonScript : MonoBehaviour
         if (enemyHealth <= 0)
         {
             win = true;
+            DeactiveChilds();
             winPanel.SetActive(true);
         }
     }
@@ -382,6 +383,7 @@ public class ButtonScript : MonoBehaviour
     }
     IEnumerator Crash()
     {
+        DeactiveChilds();
         EndPanel.SetActive(true);
         yield return new WaitForSecondsRealtime(5);
         Application.Quit();
@@ -391,5 +393,12 @@ public class ButtonScript : MonoBehaviour
         PlayerMap.level2 = true;
         SceneLoader.nextScene = 2;
         SceneManager.LoadScene(1);
+    }
+    void DeactiveChilds()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(false);
+        }
     }
 }

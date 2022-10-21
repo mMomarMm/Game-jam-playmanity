@@ -10838,7 +10838,7 @@ MonoBehaviour:
   speed: 0
   changeColorToBlue: 1
   direction: {x: 0, y: 0, z: 0}
-  whenEnd: 0
+  whenEnd: 21
 --- !u!1001 &1589924977
 PrefabInstance:
   m_ObjectHideFlags: 0
