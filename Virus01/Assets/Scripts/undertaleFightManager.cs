@@ -8,7 +8,7 @@ public class undertaleFightManager : MonoBehaviour
     public static undertaleFightManager thisScript;
     static bool isFirstTime = true;
     public int indexWave;
-    public GameObject box;
+    public GameObject box, previousWave;
     [SerializeField] List<GameObject> attacks;
     public PlayerUndertale player;
     [SerializeField] float gravity, SharkHealth;
@@ -20,7 +20,6 @@ public class undertaleFightManager : MonoBehaviour
     //only to use when the first waves had happened
     static List<GameObject> wavesPrefab = new List<GameObject>();
     float barMax;
-    GameObject previousWave;
 
     void Awake()
     {
@@ -57,11 +56,8 @@ public class undertaleFightManager : MonoBehaviour
     IEnumerator StartWave()
     {
         yield return new WaitForSeconds(2.5f);
-        if (previousWave != null)
-            Destroy(previousWave);
         previousWave = Instantiate(attacks[Random.Range(0, attacks.Count)]);
         previousWave.transform.parent = wavesChild.transform;
-        //  previousWave.transform.localPosition = Vector3.zero;
         previousWave.SetActive(true);
     }
     public void ChangeMode(bool shouldBeBlue)

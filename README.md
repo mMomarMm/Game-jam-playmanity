@@ -1,9 +1,11 @@
 # Game jam playmanity
-
-
+Submision for plaumanity gamejam.
 
 Made by:
-
+Omar
+Diego
+Ari
+Jesus
 
 
 Thanks to Dale Harris for the font.

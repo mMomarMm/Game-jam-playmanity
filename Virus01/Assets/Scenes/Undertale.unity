@@ -11837,6 +11837,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   indexWave: 0
   box: {fileID: 1749191961}
+  previousWave: {fileID: 0}
   attacks:
   - {fileID: 109623294}
   - {fileID: 1571095179}
