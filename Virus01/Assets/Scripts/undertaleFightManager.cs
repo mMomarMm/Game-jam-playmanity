@@ -14,12 +14,13 @@ public class undertaleFightManager : MonoBehaviour
     [SerializeField] float gravity, SharkHealth;
     [SerializeField] Animator sharkAnim;
     [SerializeField] TMP_Text text;
-    [SerializeField] GameObject bar, EnterText;
+    [SerializeField] GameObject bar, EnterText, endPanel, Shark, wavesChild;
     float sharkHP;
 
     //only to use when the first waves had happened
     static List<GameObject> wavesPrefab = new List<GameObject>();
     float barMax;
+    GameObject previousWave;
 
     void Awake()
     {
@@ -27,12 +28,12 @@ public class undertaleFightManager : MonoBehaviour
         barMax = bar.transform.localScale.x;
         if (isFirstTime)
         {
-            for (int i = 2; i < attacks.Count - 1; i++)
+            for (int i = 2; i < attacks.Count; i++)
             {
                 wavesPrefab.Add(attacks[i]);
             }
         }
-        player = GameObject.FindObjectOfType<PlayerUndertale>();
+        player = FindObjectOfType<PlayerUndertale>();
         thisScript = this;
         SetSharkHealth(0);
         StartCoroutine(StartGame());
@@ -47,6 +48,7 @@ public class undertaleFightManager : MonoBehaviour
         }
         EnterText.SetActive(false);
         attacks[indexWave].SetActive(true);
+        previousWave = attacks[indexWave];
     }
     public void NextWave()
     {
@@ -54,15 +56,13 @@ public class undertaleFightManager : MonoBehaviour
     }
     IEnumerator StartWave()
     {
-        yield return new WaitForSeconds(2f);
-        attacks[Mathf.Clamp(indexWave - 1, 0, attacks.Count)].SetActive(false);
-        if (indexWave == attacks.Count)
-        {
-            Instantiate(gameObject);
-            isFirstTime = false;
-            Destroy(gameObject);
-        }
-        attacks[indexWave].SetActive(true);
+        yield return new WaitForSeconds(2.5f);
+        if (previousWave != null)
+            Destroy(previousWave);
+        previousWave = Instantiate(attacks[Random.Range(0, attacks.Count)]);
+        previousWave.transform.parent = wavesChild.transform;
+        //  previousWave.transform.localPosition = Vector3.zero;
+        previousWave.SetActive(true);
     }
     public void ChangeMode(bool shouldBeBlue)
     {
@@ -91,5 +91,17 @@ public class undertaleFightManager : MonoBehaviour
         var e = bar.transform.localScale;
         e.x = sharkHP / SharkHealth * barMax;
         bar.transform.localScale = e;
+        if (sharkHP < 0)
+        {
+            EndGame();
+        }
+    }
+    void EndGame()
+    {
+        endPanel.SetActive(true);
+        Shark.SetActive(false);
+        box.SetActive(false);
+        Time.timeScale = 0;
+        this.enabled = false;
     }
 }

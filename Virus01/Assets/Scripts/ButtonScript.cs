@@ -5,8 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
-
-
+using Unity.Mathematics;
 
 public class ButtonScript : MonoBehaviour
 {
@@ -22,7 +21,7 @@ public class ButtonScript : MonoBehaviour
     public GameObject container;
 
     public GameObject referenceFinalObject;
-    
+
     // Key game object
     public GameObject UIPrefab;
 
@@ -53,12 +52,13 @@ public class ButtonScript : MonoBehaviour
     // Sorry god
     public static GameObject publicPlayer;
     public static bool isInDodge = false;
-    public GameObject EndPanel, winPanel;
+    public GameObject EndPanel, winPanel, popUp;
 
     private bool win = false;
     // Start is called before the first frame update
-    
-    void Start() {
+
+    void Start()
+    {
         Cursor.visible = true;
         attackButton.TryGetComponent(out Image attackImg);
         defenseButton.TryGetComponent(out Image defenseImg);
@@ -68,7 +68,7 @@ public class ButtonScript : MonoBehaviour
         defenseSprite = defenseImg.sprite;
         dodgeSprite = dodgeImg.sprite;
 
-        for(sbyte i = 0; i < 3; i++) commandDict.Add(i, new List<GameObject>());
+        for (sbyte i = 0; i < 3; i++) commandDict.Add(i, new List<GameObject>());
 
         dataDict = new Dictionary<int, Dictionary<string, object>>{
             {
@@ -140,7 +140,8 @@ public class ButtonScript : MonoBehaviour
         try
         {
             firstChild = currentList[0].transform.GetChild(0);
-        } catch // There are no more objects
+        }
+        catch // There are no more objects
         {
             switch (lastClicked)
             {
@@ -151,7 +152,7 @@ public class ButtonScript : MonoBehaviour
                     OnDefense();
                     break;
                 case 2:
-                    OnDodge(); 
+                    OnDodge();
                     break;
             }
             CreateKeys(lastClicked);
@@ -171,7 +172,7 @@ public class ButtonScript : MonoBehaviour
 
             Destroy(commandDict[lastClicked][0]);
             commandDict[lastClicked].RemoveAt(0);
-            
+
             AddCode();
             codeId += 1;
             return;
@@ -183,7 +184,7 @@ public class ButtonScript : MonoBehaviour
     }
     public void SelectAction(int objectId)
     {
-        if(lastClicked == objectId) return;
+        if (lastClicked == objectId) return;
 
         lastClicked = objectId;
 
@@ -222,15 +223,15 @@ public class ButtonScript : MonoBehaviour
 
         DestroyObjects();
         int keyAmount = UnityEngine.Random.Range(minAmount, maxAmount);
-        for(int i = 0; i < keyAmount; i++)
+        for (int i = 0; i < keyAmount; i++)
         {
             GameObject newInstance = Instantiate(UIPrefab, container.transform);
             newInstance.transform.localPosition = new Vector2(0, 0);
             newInstance.transform.position += new Vector3(MoveKey(keyAmount, i), 0);
-            
+
             newInstance.transform.GetChild(0).TryGetComponent(out TMP_Text u);
             newInstance.transform.TryGetComponent(out Image img);
-            
+
             u.text = ABC[UnityEngine.Random.Range(0, 25)].ToString();
             img.sprite = currSprite;
 
@@ -238,7 +239,7 @@ public class ButtonScript : MonoBehaviour
         }
     }
     private float MoveKey(int n, int i)
-    {        
+    {
         float containerWidth = referenceFinalObject.transform.position.x;
         float xPosition = (containerWidth / 20) + (spaceBetween * (i - (n / 2)));
         return xPosition;
@@ -251,9 +252,9 @@ public class ButtonScript : MonoBehaviour
             container.transform.GetChild(i).gameObject.SetActive(false);
         }
     }
-    public Sprite GetSprite(int ?objectId = null)
+    public Sprite GetSprite(int? objectId = null)
     {
-        if(objectId == null)
+        if (objectId == null)
         {
             objectId = lastClicked;
         }
@@ -271,8 +272,8 @@ public class ButtonScript : MonoBehaviour
     }
     private void ResetButtons()
     {
-        List<GameObject> buttons = new List<GameObject> { attackButton, defenseButton, dodgeButton }; 
-        for(int i = 0; i < buttons.Count; i++)
+        List<GameObject> buttons = new List<GameObject> { attackButton, defenseButton, dodgeButton };
+        for (int i = 0; i < buttons.Count; i++)
         {
             GameObject gameObj = buttons[i];
             gameObj.TryGetComponent(out Image image);
@@ -287,12 +288,13 @@ public class ButtonScript : MonoBehaviour
     }
 
     // Activates the codeId child of the object passed
-    private void ActivateChild (GameObject parentObject)
+    private void ActivateChild(GameObject parentObject)
     {
-        if(codeId == 9)
+        if (codeId == 9)
         {
             DeactivateRange(0, 9);
-        } else if (codeId == 13)
+        }
+        else if (codeId == 13)
         {
             DeactivateRange(9, 13);
             codeId = 0;
@@ -326,7 +328,7 @@ public class ButtonScript : MonoBehaviour
         CreateKeys(0);
         CreateKeys(1);
         shield.SetActive(true);
-        StartCoroutine(ResetDodge());   
+        StartCoroutine(ResetDodge());
     }
     IEnumerator ResetDodge()
     {
@@ -345,8 +347,9 @@ public class ButtonScript : MonoBehaviour
     }
     public void OnDamage(int corruption = 1)
     {
+        if (UnityEngine.Random.value < 0.1f) Instantiate(popUp, UnityEngine.Random.insideUnitCircle * 6, Quaternion.identity);
         PlayerMap.Corruption += corruption;
-        if(PlayerMap.Corruption >= 100)
+        if (PlayerMap.Corruption >= 100)
         {
             StartCoroutine(Crash());
         }
@@ -370,7 +373,7 @@ public class ButtonScript : MonoBehaviour
             winPanel.SetActive(true);
         }
     }
-    
+
     IEnumerator ResetAttack(int t = 3)
     {
         yield return new WaitForSeconds(t);
@@ -384,7 +387,7 @@ public class ButtonScript : MonoBehaviour
         Application.Quit();
     }
     public void ButtonClickHandler()
-    { 
+    {
         PlayerMap.level2 = true;
         SceneLoader.nextScene = 2;
         SceneManager.LoadScene(1);
