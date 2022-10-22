@@ -6,7 +6,6 @@ using TMPro;
 public class undertaleFightManager : MonoBehaviour
 {
     public static undertaleFightManager thisScript;
-    static bool isFirstTime = true;
     public int indexWave;
     public GameObject box, previousWave;
     [SerializeField] List<GameObject> attacks;
@@ -18,20 +17,19 @@ public class undertaleFightManager : MonoBehaviour
     float sharkHP;
 
     //only to use when the first waves had happened
-    static List<GameObject> wavesPrefab = new List<GameObject>();
+    static List<GameObject> wavesRandom = new List<GameObject>();
     float barMax;
 
     void Awake()
     {
         sharkHP = SharkHealth;
         barMax = bar.transform.localScale.x;
-        if (isFirstTime)
+
+        for (int i = 0; i < attacks.Count; i++)
         {
-            for (int i = 2; i < attacks.Count; i++)
-            {
-                wavesPrefab.Add(attacks[i]);
-            }
+            wavesRandom.Add(attacks[i]);
         }
+
         player = FindObjectOfType<PlayerUndertale>();
         thisScript = this;
         SetSharkHealth(0);
@@ -46,9 +44,8 @@ public class undertaleFightManager : MonoBehaviour
             yield return null;
         }
         EnterText.SetActive(false);
-        previousWave = Instantiate(attacks[0]);
-        previousWave.transform.parent = wavesChild.transform;
-        previousWave.SetActive(true);
+        attacks[indexWave].SetActive(true);
+        previousWave = attacks[indexWave];
     }
     public void NextWave()
     {
@@ -56,7 +53,7 @@ public class undertaleFightManager : MonoBehaviour
     }
     IEnumerator StartWave()
     {
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(2f);
         previousWave = Instantiate(attacks[Random.Range(0, attacks.Count)]);
         previousWave.transform.parent = wavesChild.transform;
         previousWave.SetActive(true);
